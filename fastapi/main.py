@@ -1,7 +1,8 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import csv
-import os
+import pymongo as pymongo
+
 
 app = FastAPI()
 
@@ -28,3 +29,12 @@ async def upload_file(file: UploadFile = File(...)):
     with open(file_location, "wb") as f:
         f.write(content)
     return {"filename": file.filename, "data": data}
+
+@app.post("/uploadmongodb/")
+async def upload(title: str, description: str):
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["fastapi"]
+    collection = db["files"]
+    data = {"title": title, "description": description, "file_name": "file_name"}
+    collection.insert_one(data)
+    return {"message": "File uploaded successfully"}
