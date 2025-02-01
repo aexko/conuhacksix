@@ -46,6 +46,13 @@ export default {
 </script>
 
 <style scoped>
+div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;

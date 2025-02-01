@@ -8,6 +8,12 @@ const router = createRouter({
       name: 'csv-reader',
       component: () => import('../views/CsvReader.vue'),
     },
+
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: () => import('../views/Dashboard.vue'),
+    }
   ],
 })
 
