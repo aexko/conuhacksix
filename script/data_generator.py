@@ -46,8 +46,11 @@ dates = generate_dates(2022, 2024)
 # Generate values based on the chosen mode
 values = generate_trend_values(len(dates), mode)
 
+#Get user input for name of CSV file
+csv_file = input("Enter the name of the CSV file: ")
+
 # Write data to CSV file
-csv_file = 'date_values_data.csv'
+csv_file = f'{csv_file}.csv'
 with open(csv_file, mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(['Date', 'Value'])  # Write header
