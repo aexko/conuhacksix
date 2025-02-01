@@ -14,3 +14,6 @@ async def root():
 async def upload_file():
     return {"message": "File uploaded successfully"}
 
+@app.post("/merge")
+async def merge_files():
+    return {"message": "Files merged successfully"}
