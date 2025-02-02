@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import csv
 import pymongo
@@ -20,6 +20,20 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+@app.post("/savefile/")
+async def save_file(title: str = Form(...), description: str = Form(...), filename: str = Form(...)):
+    uri = os.getenv("MONGODB_URI")
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    file = {
+        "title": title,
+        "description": description,
+        "filename": filename
+    }
+    collection.insert_one(file)
+    return {"message": "Data saved successfully!"}
+
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
     content = await file.read()
@@ -29,17 +43,9 @@ async def upload_file(file: UploadFile = File(...)):
     file_location = f"uploaded_files/{file.filename}"
     with open(file_location, "wb") as f:
         f.write(content)
+
+    await save_file("test", "No description", file.filename)
     return {"filename": file.filename, "data": data}
-
-@app.post("/uploadmongodb/")
-async def upload(title: str, description: str):
-    client = pymongo.MongoClient("mongodb://localhost:27017/")
-    db = client["fastapi"]
-    collection = db["files"]
-    data = {"title": title, "description": description, "file_name": "file_name"}
-    collection.insert_one(data)
-    return {"message": "File uploaded successfully"}
-
 
 def check_db_connection():
     uri = os.getenv("MONGODB_URI")
