@@ -15,30 +15,22 @@
 
 <div class="field">
     <label class="label">Upload File</label>
-    <div class="file is-boxed">
+      <div class="file is-normal is-boxed">
     <label class="file-label">
-        <input class="file-input" type="file" name="resume" />
-        <span class="file-cta">
+      <input class="file-input" type="file" name="resume" />
+      <span class="file-cta">
         <span class="file-icon">
-        <i class="fas fa-upload"></i>
+          <i class="fas fa-upload"></i>
         </span>
-      <span class="file-label"> Choose a file… </span>
-        </span>
+        <span class="file-label"> Normal file… </span>
+      </span>
     </label>
-    </div>
+</div>
 </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      inputTitle: '',
-      inputDescription: '',
-      inputFileName: ''
-    };
-  }
-};
+
 </script>
 
 <style scoped>
@@ -78,7 +70,7 @@ export default {
   text-align: center;
 }
 
-.file {
+.file-input {
     width: 50%;
     padding: 0.5rem;
     border: 1px solid #ccc;
