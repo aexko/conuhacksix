@@ -1,16 +1,23 @@
 <template>
-    <main>
-        <NavBar/>
-        Oh no! This page is empty!
-    </main>
+    <div class="dashboard">
+        <h1>Dashboard</h1>
+        <p>Welcome to the dashboard!</p>
+        <!-- Add more dashboard content here -->
+    </div>
 </template>
 
+<script>
+export default {
+    name: 'Dashboard'
+};
+</script>
+
 <style scoped>
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
+.dashboard {
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
 }
 </style>

@@ -1,50 +1,79 @@
 <template>
-    <nav class="nav">
-        <li class="links">
-    <RouterLink to="/csv-reader">Home</RouterLink>
-        </li>
-        <li class="links">
-    <RouterLink to="/dashboard">Dashboard</RouterLink>
-        </li>
-  </nav>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+                data-target="navbarBasicExample" @click="toggleNavbar">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
+            <div class="navbar-start">
+                <router-link class="navbar-item" to="/">Home</router-link>
+                <router-link class="navbar-item" to="/csv-reader">CSV Reader</router-link>
+                <router-link class="navbar-item" to="/dashboard">Dashboard</router-link>
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="buttons">
+                        <router-link class="button is-primary" to="/signup">
+                            <strong>Sign up</strong>
+                        </router-link>
+                        <router-link class="button is-light" to="/login">
+                            Log in
+                        </router-link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
-    name: 'NavBar'
-}
+    name: 'Navbar',
+    setup() {
+        const isActive = ref(false);
+
+        const toggleNavbar = () => {
+            isActive.value = !isActive.value;
+        };
+
+        return {
+            isActive,
+            toggleNavbar
+        };
+    }
+};
 </script>
 
 <style scoped>
-.nav {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 175px;
+.navbar {
     background-color: #333;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 20px;
-}
-
-.nav .links{
-    list-style-type: none;
-    padding: 0;
-}
-
-.nav .links {
-    margin: 20px 0;
-}
-
-.nav .links {
     color: white;
-    text-decoration: none;
-    font-size: 18px;
 }
 
-.nav .links:hover {
-    color: #ddd;
+.navbar-item {
+    color: white;
+}
+
+.navbar-item:hover {
+    background-color: #555;
+}
+
+.button.is-primary {
+    background-color: #00d1b2;
+    border-color: transparent;
+}
+
+.button.is-light {
+    background-color: #fff;
+    color: #333;
 }
 </style>
