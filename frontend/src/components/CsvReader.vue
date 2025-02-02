@@ -1,12 +1,12 @@
 <template>
   
   <div class="field">
-    <label class="label">Datasets Name</label>
+    <label class="label">Datasets name</label>
     <input type="text" class="input" v-model="name" placeholder="Enter datasets name (Must be unique and precise) (Ex : number of trees)" />
   </div>
   
   <div class="field">
-    <label class="label">Upload File</label>
+    <label class="label">Upload file</label>
     <div class="file is-normal is-boxed">
       <label class="file-label">
         <input class="file-input" type="file" @change="handleFileUpload" />
@@ -14,7 +14,7 @@
           <span class="file-icon">
             <i class="fas fa-upload"></i>
           </span>
-          <span class="file-label"> Choose File </span>
+          <span class="file-label"> Choose CSV file </span>
         </span>
         <span>
           <span class="file-name">{{ selectedFile ? selectedFile.name : 'No file uploaded' }}</span>
@@ -67,8 +67,7 @@ export default {
 } 
 
 .file-name {
-  display: flex;
-  justify-content: center;
+  text-align: center;
 }
 
 </style>
