@@ -1,5 +1,7 @@
 import json
 
+from bson import ObjectId
+
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 from fastapi import FastAPI
@@ -23,6 +25,7 @@ from modules.calculation import calculate_correlation
 # `fastapi dev main.py` to run the server
 app = FastAPI()
 
+uri = os.getenv("MONGODB_URI")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -35,16 +38,7 @@ app.add_middleware(
 
 @app.post("/savefile/")
 async def save_file(title: str = Form(...), description: str = Form(...), filename: str = Form(...)):
-    uri = os.getenv("MONGODB_URI")
-    client = MongoClient(uri, server_api=ServerApi('1'))
-    db = client["filestore"]
-    collection = db["files"]
-    file = {
-        "title": title,
-        "description": description,
-        "filename": filename
-    }
-    collection.insert_one(file)
+
     return {"message": "Data saved successfully!"}
 
 
@@ -52,9 +46,32 @@ async def save_file(title: str = Form(...), description: str = Form(...), filena
 async def root():
     return {"message": "Hello World"}
 
+@app.delete("/deletefile/{id}")
+async def delete_file(id: str):
+    try:
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        db = client["filestore"]
+        collection = db["files"]
+
+        result = collection.delete_one({"_id": ObjectId(id)})
+        if result.deleted_count == 1:
+            return {"message": "File deleted successfully!"}
+        else:
+            return {"message": "File not found!"}
+    except:
+        return {"message": "File not found!"}
 
 @app.post("/uploadfile/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), title: str = Form(...)):
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    document = {
+        "title": title,
+        "filename": file.filename
+    }
+    collection.insert_one(document)
+
     content = await file.read()
     decoded_content = content.decode("utf-8").splitlines()
     reader = csv.reader(decoded_content)
@@ -68,7 +85,6 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 def check_db_connection():
-    uri = 'mongodb+srv://dev:bsHkIOGh9uDf9DNR@cluster0.ygawl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
     client = MongoClient(uri, server_api=ServerApi('1'))
 
     try:
@@ -82,15 +98,8 @@ def check_db_connection():
 
 check_db_connection()
 
-
-@app.post("/merge")
-async def merge_files():
-    return {"message": "Files merged successfully"}
-
-
 @app.get("/getcorrelations")
 async def get_correlations():
-    uri = os.getenv("MONGODB_URI")
     client = MongoClient(uri, server_api=ServerApi('1'))
     db = client["filestore"]
     collection = db["files"]
@@ -99,7 +108,7 @@ async def get_correlations():
     for result in collection.find():
         try:
             files.append(
-                {'filename': result['filename'], 'title': result['title'], 'description': result['description'],
+                {'filename': result['filename'], 'title': result['title'],
                  'id': str(result['_id'])})
         except:
             pass
@@ -109,22 +118,16 @@ async def get_correlations():
 
 @app.get("/gemini")
 async def call_api():
-    uri = os.getenv("MONGODB_URI")
     client = MongoClient(uri, server_api=ServerApi('1'))
     db = client["filestore"]
     collection = db["files"]
-    # results =
     subPrompt = ''
     for result in collection.find():
         try:
             subPrompt += result['title'] + ', '
         except:
             pass
-
-    # return files
     response = call_gemini_api(subPrompt)
-
-    # print(response)
     try:
         text_content = response["candidates"][0]["content"]["parts"][0]["text"]
         json_string = text_content
