@@ -11,7 +11,7 @@
                                 </span>
                             </div>
                             <div class="media-content">
-                                <p class="title is-4">{{ datasheet1 }} in correlation with {{ datasheet2}}</p>
+                                <p class="title is-4">{{ datasheet1 }} in correlation with {{ datasheet2 }}</p>
                             </div>
                         </div>
                         <div class="content">
@@ -67,7 +67,7 @@ export default {
 } */
 
 .card {
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 }
 
 /* .field {
