@@ -47,6 +47,12 @@ async def save_file(title: str = Form(...), description: str = Form(...), filena
     collection.insert_one(file)
     return {"message": "Data saved successfully!"}
 
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+
 @app.get("/gemini")
 async def callapi():
     response = call_gemini_api()
@@ -95,4 +101,10 @@ def check_db_connection():
         return False
     
 
+
 check_db_connection()
+
+
+@app.post("/merge")
+async def merge_files():
+    return {"message": "Files merged successfully"}
