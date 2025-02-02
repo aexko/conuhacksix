@@ -1,7 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import csv
-import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import os
