@@ -1,16 +1,13 @@
+<script setup>
+import GraphLine from '@/components/GraphLine.vue';
+</script>
+
 <template>
     <div class="dashboard">
         <h1>Dashboard</h1>
-        <p>Welcome to the dashboard!</p>
-        <!-- Add more dashboard content here -->
+        <GraphLine />
     </div>
 </template>
-
-<script>
-export default {
-    name: 'Dashboard'
-};
-</script>
 
 <style scoped>
 .dashboard {
