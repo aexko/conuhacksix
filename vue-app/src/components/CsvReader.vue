@@ -1,21 +1,28 @@
 <template>
   <div class="field">
+    <label class="label">Title Of Datasheet</label>
+    <div class="control">
+      <input class="input" type="text" v-model="fileName" placeholder="Enter title (Must be unique) (Ex : number of trees)" />
+    </div>
+  </div>
+
+  <div class="field">
     <label class="label">Upload File</label>
     <div class="file is-normal is-boxed">
       <label class="file-label">
-        <input class="file-input" type="file" @change="handleFileUpload" />
+        <input class="file-input" type="file" name="resume" @change="handleFileUpload" />
         <span class="file-cta">
           <span class="file-icon">
             <i class="fas fa-upload"></i>
           </span>
-          <span class="file-label"> Choose File </span>
+          <span class="file-label"> Choose CSV File </span>
         </span>
         <span>
           <span class="file-name">{{ selectedFile ? selectedFile.name : 'No file uploaded' }}</span>
         </span>
       </label>
     </div>
-    <button class= "button" @click="uploadFile">Upload</button>
+    <button class="button" @click="uploadFile">Upload</button>
   </div>
 </template>
 
@@ -51,3 +58,17 @@ export default {
   },
 }
 </script>
+
+<style>
+.field {
+  margin-bottom: auto;
+  margin-top: auto;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.file-name {
+  text-align: center;
+}
+</style>
