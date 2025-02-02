@@ -103,7 +103,6 @@ def check_db_connection():
 
 
 
-
 check_db_connection()
 
 
@@ -123,7 +122,8 @@ async def get_correlations():
     for result in collection.find():
         try:
             files.append(
-                {'filename': result['filename'], 'title': result['title'], 'description': result['description'], 'id': str(result['_id'])})
+                {'filename': result['filename'], 'title': result['title'], 'description': result['description'],
+                 'id': str(result['_id'])})
         except:
             pass
 
