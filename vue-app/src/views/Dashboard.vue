@@ -1,16 +1,15 @@
+<script setup>
+import GraphLine from '@/components/GraphLine.vue';
+import InsightsComponent from '@/components/InsightsComponent.vue';
+</script>
+
 <template>
     <div class="dashboard">
         <h1>Dashboard</h1>
-        <p>Welcome to the dashboard!</p>
-        <!-- Add more dashboard content here -->
+        <GraphLine />
+        <InsightsComponent />
     </div>
 </template>
-
-<script>
-export default {
-    name: 'Dashboard'
-};
-</script>
 
 <style scoped>
 .dashboard {
