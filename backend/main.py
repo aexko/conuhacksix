@@ -106,7 +106,19 @@ async def upload_file(file: UploadFile = File(...), title: str = Form(...)):
     return {"filename": file.filename, "data": data}
 
 
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 def check_db_connection():
+    uri = os.getenv("MONGODB_URI")
+    if not uri:
+        print("MONGODB_URI is not set in the .env file")
+        return False
+
     client = MongoClient(uri, server_api=ServerApi('1'))
 
     try:
@@ -116,6 +128,9 @@ def check_db_connection():
     except Exception as e:
         print(f"Failed to connect to MongoDB: {e}")
         return False
+
+# Call the function to check the connection
+check_db_connection()
     
 
 
