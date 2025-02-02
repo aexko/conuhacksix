@@ -4,7 +4,7 @@
         <div class="columns">
             <div class="column">
                 <div class="box" v-for="(correlation, index) in correlations" :key="index">
-                    {{ correlation[0] }} - {{ correlation[1] }}
+                    {{ correlation[0] }} with {{ correlation[1] }}
                 </div>
             </div>
             <div class="column">
