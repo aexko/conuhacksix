@@ -36,7 +36,7 @@ uri = os.getenv("MONGODB_URI")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Allow only your Vue app's origin
+    allow_origins=["http://localhost:5173", "https://www.datadisco.study"],  # Allow only your Vue app's origin
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -76,6 +76,11 @@ async def delete_file(id: str):
         collection = db["files"]
 
         result = collection.delete_one({"_id": ObjectId(id)})
+        deleted_file = collection.find_one({"_id": ObjectId(id)})
+        if deleted_file:
+            file_path = f"uploaded_files/{deleted_file['id']}"
+            if os.path.exists(file_path):
+                os.remove(file_path)
         if result.deleted_count == 1:
             return {"message": "File deleted successfully!"}
         else:
