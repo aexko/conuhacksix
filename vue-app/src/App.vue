@@ -1,13 +1,11 @@
 <script setup>
-import { RouterView } from 'vue-router'
-import NavBar from './components/NavBar.vue'
+import { RouterLink, RouterView } from 'vue-router'
+import Navbar from './components/Navbar.vue'
 </script>
 
 <template>
   <header>
-    <nav>
-      <NavBar />
-    </nav>
+    <Navbar />
   </header>
   <main>
     <RouterView />
@@ -16,16 +14,10 @@ import NavBar from './components/NavBar.vue'
 
 <style scoped>
 header {
-  width: 100%;
-  padding: 1rem;
-}
-
-nav {
-  display: flex;
-  justify-content: flex;
+  margin-bottom: 20px;
 }
 
 main {
-  padding: 1rem;
+  padding: 20px;
 }
 </style>

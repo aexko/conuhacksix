@@ -1,15 +1,7 @@
 <template>
-<div class="field">
-  <label class="label">File Name</label>
-  <div class="control">
-    <input v-model="inputTitle" class="input" type="text" placeholder="Enter File Name">
-  </div>
-</div>
-
-<div class="field">
-  <label class="label">Description/Context</label>
-  <div class="control"> 
-    <textarea v-model="inputDescription" class="textarea" placeholder="Enter Description/Context" rows="10"></textarea>
+    <div>
+        <input type="file" @change="handleFileUpload" />
+        <button @click="uploadFile">Upload</button>
     </div>
   </div>
 
@@ -33,55 +25,34 @@
 </template>
 
 <script>
+import axios from 'axios';
 
+export default {
+    data() {
+        return {
+            selectedFile: null,
+        };
+    },
+    methods: {
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0];
+        },
+        async uploadFile() {
+            if (!this.selectedFile) {
+                alert("Please select a file first!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", this.selectedFile);
+
+            try {
+                const response = await axios.post("http://localhost:8000/uploadfile/", formData);
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
+        },
+    },
+};
 </script>
-
-<style scoped>
-
-.field {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.label {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    color: black;
-}
-
-.input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.textarea {
-  min-height: 200px;
-  min-width: 1000px;
-  max-width: 100%;
-  max-width: 100%;
-  resize: none;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  text-align: center;
-}
-
-.file-input {
-    width: 50%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    text-align: center;
-}
-
-.file-name {
-    text-align: center;
-}
-</style>
