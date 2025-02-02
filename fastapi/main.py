@@ -21,6 +21,12 @@ from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 
 # `fastapi dev main.py` to run the server
+import json
+
+from modules.gemini import call_gemini_api
+from modules.calculation import calculate_correlation
+
+# `fastapi dev main.py` to run the server
 app = FastAPI()
 
 # Configure CORS
@@ -31,7 +37,6 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-
 
 @app.post("/savefile/")
 async def save_file(title: str = Form(...), description: str = Form(...), filename: str = Form(...)):
@@ -50,27 +55,22 @@ async def save_file(title: str = Form(...), description: str = Form(...), filena
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/gemini")
-async def callapi():
-    response = call_gemini_api()
-
-    # print(response)
-    try:
-        text_content = response["candidates"][0]["content"]["parts"][0]["text"]
-        json_string = text_content
-
-        # Step 2: Remove the Markdown code block syntax
-        json_string = json_string.strip("```json\n").strip("\n```")
-
-        # Step 3: Parse the JSON string into a Python object
-        parsed_data = json.loads(json_string)
-        return parsed_data
-    except:
-        print('error')
-        return response
+    # response = call_gemini_api()
+    #
+    # # print(response)
+    # try:
+    #     text_content = response["candidates"][0]["content"]["parts"][0]["text"]
+    #     json_string = text_content
+    #
+    #     # Step 2: Remove the Markdown code block syntax
+    #     json_string = json_string.strip("```json\n").strip("\n```")
+    #
+    #     # Step 3: Parse the JSON string into a Python object
+    #     parsed_data = json.loads(json_string)
+    #     return parsed_data
+    # except:
+    #     print('error')
+    #     return response
     return {"message": "Hello World"}
 
 
@@ -89,7 +89,7 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 def check_db_connection():
-    uri = os.getenv("MONGODB_URI")
+    uri = 'mongodb+srv://dev:bsHkIOGh9uDf9DNR@cluster0.ygawl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
     client = MongoClient(uri, server_api=ServerApi('1'))
 
     try:
@@ -102,9 +102,62 @@ def check_db_connection():
     
 
 
+
+
 check_db_connection()
 
 
 @app.post("/merge")
 async def merge_files():
     return {"message": "Files merged successfully"}
+
+
+@app.get("/getcorrelations")
+async def get_correlations():
+    uri = os.getenv("MONGODB_URI")
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    # results =
+    files = []
+    for result in collection.find():
+        try:
+            files.append(
+                {'filename': result['filename'], 'title': result['title'], 'description': result['description'], 'id': str(result['_id'])})
+        except:
+            pass
+
+    return files
+
+
+@app.get("/gemini")
+async def call_api():
+    uri = os.getenv("MONGODB_URI")
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    # results =
+    subPrompt = ''
+    for result in collection.find():
+        try:
+            subPrompt += result['title'] + ', '
+        except:
+            pass
+
+    # return files
+    response = call_gemini_api(subPrompt)
+
+    # print(response)
+    try:
+        text_content = response["candidates"][0]["content"]["parts"][0]["text"]
+        json_string = text_content
+
+        # Step 2: Remove the Markdown code block syntax
+        json_string = json_string.strip("```json\n").strip("\n```")
+
+        # Step 3: Parse the JSON string into a Python object
+        parsed_data = json.loads(json_string)
+        return parsed_data
+    except:
+        print('error')
+        return {"message": response}
