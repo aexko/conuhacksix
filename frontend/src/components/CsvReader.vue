@@ -1,8 +1,8 @@
 <template>
-  
+  <p class="title has-text-centered">Upload CSV dataset</p>
   <div class="field">
-    <label class="label">Datasets name</label>
-    <input type="text" class="input" v-model="name" placeholder="Enter datasets name (Must be unique and precise) (Ex : number of trees)" />
+    <label class="label">Dataset name</label>
+    <input type="text" class="input" v-model="title" placeholder="Enter dataset name (Must be unique and precise) (Ex : number of trees)" />
   </div>
   
   <div class="field">
@@ -22,21 +22,62 @@
       </label>
     </div>
     <button class= "button" @click="uploadFile">Upload</button>
+
+    <br><br><br>
+    <p class="title has-text-centered">Current database</p>
+    <p v-if="datasets.length === 0" class="has-text-centered is-size-3">Loading...</p>
+    <br>
+    <div class="columns is-multiline">
+      <div class="box has-text-centered column"  style="width: 50%;" v-for="dataset in datasets" :key=dataset.id>
+        <p>{{dataset.title}}</p> <p @click="deleteDataset(dataset.id)">🗑️</p>
+      </div>
+      
+
+    </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   data() {
     return {
       selectedFile: null,
+      title: '',
+      datasets: [],
     }
+  },
+  mounted() {
+    console.log('Fetching datasets');
+    this.fetchDatasets();
   },
   methods: {
     handleFileUpload(event) {
       this.selectedFile = event.target.files[0]
+    },
+    async fetchDatasets() {
+      try {
+        const response = await fetch('http://localhost:8000/getcorrelations')
+        const data = await response.json();
+        console.log(data);
+        this.datasets = data;
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error)
+      }
+    },
+
+    async deleteDataset(id) {
+      try {
+        const response = await fetch('http://localhost:8000/deletefile/' + id, {
+          method: 'DELETE'
+        })
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        alert('Dataset deleted successfully')
+        window.location.reload();
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error)
+      }
     },
     async uploadFile() {
       if (!this.selectedFile) {
@@ -44,17 +85,34 @@ export default {
         return
       }
 
+      if (!this.title) {
+        alert('Please enter a title!')
+        return
+      }
+
       const formData = new FormData()
       formData.append('file', this.selectedFile)
+      formData.append('title', this.title)
 
       try {
-        const response = await axios.post('http://localhost:8000/uploadfile/', formData)
-        console.log(response.data)
+        const response = await fetch('http://localhost:8000/uploadfile', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        // const data = await response.json()
+        alert('File uploaded successfully')
+        window.location.reload();
       } catch (error) {
-        console.error('Error uploading file:', error)
+        alert('There was a problem with the fetch operation:', error)
+        console.error('There was a problem with the fetch operation:', error)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

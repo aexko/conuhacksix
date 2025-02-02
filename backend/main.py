@@ -1,6 +1,7 @@
 import json
 
 from bson import ObjectId
+from fastapi.params import Query
 
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
@@ -164,3 +165,25 @@ async def call_api():
     except:
         print('error')
         return {"message": response}
+@app.get("/getcsvdata")
+async def get_csv_data(filename: str = Query(...)):
+    file_path = f"uploaded_files/{filename}"
+    x = []
+    y = []
+
+    try:
+        with open(file_path, "r") as file:
+            reader = csv.reader(file)
+            next(reader)  # Skip the first row
+            for row in reader:
+                date, value = row
+                try:
+                    value = float(value)
+                    x.append(date)
+                    y.append(value)
+                except ValueError:
+                    return {"error": f"Invalid float value: {value}"}
+    except Exception as e:
+        return {"error": str(e)}
+
+    return {"x": x, "y": y}

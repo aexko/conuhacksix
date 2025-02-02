@@ -1,17 +1,17 @@
 <template>
     <div class="insights">
-        <div class="columns is-multiline">
-            <div class="column is-one-third" v-for="insight in insights" :key="insight.id">
+        <div class="">
+            <div class="">
                 <div class="card">
                     <div class="card-content">
                         <div class="media">
                             <div class="media-left">
                                 <span class="icon is-large">
-                                    <i :class="insight.icon"></i>
+                                    <i class="fas fa-chart-line fa-2x"></i>
                                 </span>
                             </div>
                             <div class="media-content">
-                                <p class="title is-4">{{ insight.title }}</p>
+                                <p class="title is-4">{{ datasheet1 }} in correlation with {{ datasheet2}}</p>
                             </div>
                         </div>
                         <div class="content">
@@ -19,16 +19,16 @@
                                 <span class="icon">
                                     <i class="fas fa-database"></i>
                                 </span>
-                                <span>{{ insight.datasheet1 }}</span>
+                                <span>{{ datasheet1 }}</span>
                             </div>
                             <div class="field">
                                 <span class="icon">
                                     <i class="fas fa-database"></i>
                                 </span>
-                                <span>{{ insight.datasheet2 }}</span>
+                                <span>{{ datasheet2 }}</span>
                             </div>
                             <div class="field">
-                                {{ insight.description }}
+                                {{ reason }}
                             </div>
                         </div>
                     </div>
@@ -43,48 +43,36 @@ import axios from 'axios';
 
 export default {
     name: 'InsightsComponent',
-    data() {
-        return {
-            insights: []
-        };
+    // data() {
+    //     return {
+    //         insights: []
+    //     };
+    // },
+    props: {
+        reason: String,
+        datasheet1: String,
+        datasheet2: String,
     },
-    mounted() {
-        this.fetchInsights();
-    },
-    methods: {
-        async fetchInsights() {
-            try {
-                const response = await axios.get('http://localhost:8000/gemini');
-                this.insights = response.data.map((item, index) => ({
-                    id: index + 1,
-                    icon: 'fas fa-chart-line fa-2x', // You can customize the icon based on the data
-                    title: item.title || `Insight ${index + 1}`,
-                    datasheet1: item.datasheet1 || 'Dataset 1 not available',
-                    datasheet2: item.datasheet2 || 'Dataset 2 not available',
-                    description: item.reason || 'No description available.'
-                }));
-            } catch (error) {
-                console.error('Error fetching insights:', error);
-            }
-        }
-    }
+    // mounted() {
+    //     this.fetchInsights();
+    // }
 };
 </script>
 
 <style scoped>
 @import '@fortawesome/fontawesome-free/css/all.css';
 
-.insights {
+/* .insights {
     padding: 20px;
-}
+} */
 
 .card {
     margin-bottom: 20px;
 }
 
-.field {
+/* .field {
     margin-bottom: 10px;
-}
+} */
 
 .icon {
     margin-right: 5px;

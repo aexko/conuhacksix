@@ -16,19 +16,6 @@
                 <router-link class="navbar-item" to="/csv-reader">CSV Reader</router-link>
                 <router-link class="navbar-item" to="/dashboard">Dashboard</router-link>
             </div>
-
-            <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <router-link class="button is-primary" to="/signup">
-                            <strong>Sign up</strong>
-                        </router-link>
-                        <router-link class="button is-light" to="/login">
-                            Log in
-                        </router-link>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
 </template>
