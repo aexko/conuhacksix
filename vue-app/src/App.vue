@@ -1,12 +1,23 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import Navbar from './components/Navbar.vue'
 </script>
 
 <template>
   <header>
-    <nav>
-      <RouterLink to="/csv-reader">CSV READER</RouterLink>
-    </nav>
+    <Navbar />
   </header>
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>
+
+<style scoped>
+header {
+  margin-bottom: 20px;
+}
+
+main {
+  padding: 20px;
+}
+</style>
