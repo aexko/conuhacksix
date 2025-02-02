@@ -13,7 +13,6 @@ import json
 
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
-from fastapi import FastAPI
 
 # `fastapi dev main.py` to run the server
 app = FastAPI()
@@ -26,6 +25,7 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
 
 @app.post("/savefile/")
 async def save_file(title: str = Form(...), description: str = Form(...), filename: str = Form(...)):
@@ -40,25 +40,33 @@ async def save_file(title: str = Form(...), description: str = Form(...), filena
     }
     collection.insert_one(file)
     return {"message": "Data saved successfully!"}
+
+
 @app.get("/")
 async def root():
-    # response = call_gemini_api()
-    #
-    # # print(response)
-    # try:
-    #     text_content = response["candidates"][0]["content"]["parts"][0]["text"]
-    #     json_string = text_content
-    #
-    #     # Step 2: Remove the Markdown code block syntax
-    #     json_string = json_string.strip("```json\n").strip("\n```")
-    #
-    #     # Step 3: Parse the JSON string into a Python object
-    #     parsed_data = json.loads(json_string)
-    #     return parsed_data
-    # except:
-    #     print('error')
-    #     return response
     return {"message": "Hello World"}
+
+
+@app.get("/gemini")
+async def callapi():
+    response = call_gemini_api()
+
+    # print(response)
+    try:
+        text_content = response["candidates"][0]["content"]["parts"][0]["text"]
+        json_string = text_content
+
+        # Step 2: Remove the Markdown code block syntax
+        json_string = json_string.strip("```json\n").strip("\n```")
+
+        # Step 3: Parse the JSON string into a Python object
+        parsed_data = json.loads(json_string)
+        return parsed_data
+    except:
+        print('error')
+        return response
+    return {"message": "Hello World"}
+
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
@@ -73,6 +81,7 @@ async def upload_file(file: UploadFile = File(...)):
     await save_file("test", "No description", file.filename)
     return {"filename": file.filename, "data": data}
 
+
 def check_db_connection():
     uri = os.getenv("MONGODB_URI")
     client = MongoClient(uri, server_api=ServerApi('1'))
@@ -85,7 +94,9 @@ def check_db_connection():
         print(f"Failed to connect to MongoDB: {e}")
         return False
 
+
 check_db_connection()
+
 
 @app.post("/merge")
 async def merge_files():
