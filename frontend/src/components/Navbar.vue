@@ -12,9 +12,8 @@
 
         <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
             <div class="navbar-start">
-                <router-link class="navbar-item" to="/">Home</router-link>
-                <router-link class="navbar-item" to="/csv-reader">CSV Reader</router-link>
                 <router-link class="navbar-item" to="/dashboard">Dashboard</router-link>
+                <router-link class="navbar-item" to="/csv-reader">Datasets</router-link>
             </div>
         </div>
     </nav>
@@ -44,10 +43,12 @@ export default {
 .navbar {
     background-color: #333;
     color: white;
+    padding-left: 10%;
 }
 
 .navbar-item {
     color: white;
+    font-size: larger;
 }
 
 .navbar-item:hover {

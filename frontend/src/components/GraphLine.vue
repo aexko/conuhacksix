@@ -9,6 +9,7 @@ import Plotly from 'plotly.js-dist';
 export default {
     name: 'GraphLine',
     mounted() {
+        this.test()
         this.fetchDatasets();
         this.drawChart();
     },
@@ -23,10 +24,22 @@ export default {
             filename2: [],
             dataset1: [],
             dataset2: [],
-
+            title1: '',
+            title2: ''
         };
     },
+    watch: {
+        datasheet1() {
+            this.fetchDatasets();
+        },
+        datasheet2() {
+            this.fetchDatasets();
+        }
+    },
     methods: {
+        async test() {
+            console.log('test');
+        },
         async fetchDatasets() {
             try {
                 const response = await fetch('http://localhost:8000/getcorrelations')
@@ -37,12 +50,14 @@ export default {
                 for (let i = 0; i < this.datasets.length; i++) {
                     if (this.datasets[i].title === this.datasheet1) {
                         this.filename1 = this.datasets[i].filename;
+                        this.title1 = this.datasets[i].title;
                         const response = await fetch('http://localhost:8000/getcsvdata?filename=' + this.filename1)
                         const data = await response.json();
                         this.dataset1 = data;
                     }
                     if (this.datasets[i].title === this.datasheet2) {
                         this.filename2 = this.datasets[i].filename;
+                        this.title2 = this.datasets[i].title;
                         const response = await fetch('http://localhost:8000/getcsvdata?filename=' + this.filename2)
                         const data = await response.json();
                         this.dataset2 = data;
@@ -59,10 +74,17 @@ export default {
             const trace1 = {
                 x: this.dataset1.x,
                 y: this.dataset1.y,
-                type: 'scatter'
+                type: 'scatter',
+                name: this.title1
+            };
+            const trace2 = {
+                x: this.dataset2.x,
+                y: this.dataset2.y,
+                type: 'scatter',
+                name: this.title2
             };
 
-            const data = [trace1];
+            const data = [trace1, trace2];
 
             const layout = {
                 title: 'Line Graph',
