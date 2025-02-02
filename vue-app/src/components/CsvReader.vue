@@ -1,70 +1,88 @@
 <template>
-    <div>
-        <input type="file" @change="handleFileUpload" />
-        <table v-if="csvData.length">
-            <thead>
-                <tr>
-                    <th v-for="(header, index) in csvData[0]" :key="index">{{ header }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(row, rowIndex) in csvData.slice(1)" :key="rowIndex">
-                    <td v-for="(cell, cellIndex) in row" :key="cellIndex">{{ cell }}</td>
-                </tr>
-            </tbody>
-        </table>
+<div class="field">
+  <label class="label">File Name</label>
+  <div class="control">
+    <input v-model="inputTitle" class="input" type="text" placeholder="Enter File Name">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">Description/Context</label>
+  <div class="control">
+    <textarea v-model="inputDescription" class="textarea" placeholder="Enter Description/Context" rows="10"></textarea>
     </div>
+  </div>
+
+<div class="field">
+    <label class="label">Upload File</label>
+    <div class="file is-boxed">
+    <label class="file-label">
+        <input class="file-input" type="file" name="resume" />
+        <span class="file-cta">
+        <span class="file-icon">
+        <i class="fas fa-upload"></i>
+        </span>
+      <span class="file-label"> Choose a file… </span>
+        </span>
+    </label>
+    </div>
+</div>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            csvData: []
-        };
-    },
-    methods: {
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file && file.type === 'text/csv') {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const text = e.target.result;
-                    this.csvData = this.parseCSV(text);
-                };
-                reader.readAsText(file);
-            } else {
-                alert('Please upload a valid CSV file.');
-            }
-        },
-        parseCSV(text) {
-            const rows = text.split('\n');
-            return rows.map(row => row.split(','));
-        }
-    }
+  data() {
+    return {
+      inputTitle: '',
+      inputDescription: '',
+      inputFileName: ''
+    };
+  }
 };
 </script>
 
 <style scoped>
-div {
+
+.field {
+    margin-bottom: 1.5rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    justify-content: center;
 }
 
-table {
+.label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: black;
+}
+
+.input {
     width: 100%;
-    border-collapse: collapse;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
 }
 
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 8px;
+.textarea {
+  min-height: 200px;
+  min-width: 1000px;
+  max-width: 100%;
+  max-width: 100%;
+  resize: none;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
 }
 
-th {
-    background-color: #f2f2f2;
+.file {
+    width: 50%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
 }
 </style>
