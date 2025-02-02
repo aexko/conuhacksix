@@ -8,7 +8,7 @@
 
 <div class="field">
   <label class="label">Description/Context</label>
-  <div class="control">
+  <div class="control"> 
     <textarea v-model="inputDescription" class="textarea" placeholder="Enter Description/Context" rows="10"></textarea>
     </div>
   </div>
@@ -23,6 +23,9 @@
           <i class="fas fa-upload"></i>
         </span>
         <span class="file-label"> Normal file… </span>
+      </span>
+      <span>
+        <span class="file-name">No file uploaded</span>
       </span>
     </label>
 </div>
@@ -75,6 +78,10 @@
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    text-align: center;
+}
+
+.file-name {
     text-align: center;
 }
 </style>
