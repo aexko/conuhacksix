@@ -1,8 +1,13 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import csv
-import pymongo as pymongo
+import pymongo
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = FastAPI()
 
@@ -14,10 +19,6 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 
 @app.post("/uploadfile/")
 async def upload_file(file: UploadFile = File(...)):
@@ -38,3 +39,18 @@ async def upload(title: str, description: str):
     data = {"title": title, "description": description, "file_name": "file_name"}
     collection.insert_one(data)
     return {"message": "File uploaded successfully"}
+
+
+def check_db_connection():
+    uri = os.getenv("MONGODB_URI")
+    client = MongoClient(uri, server_api=ServerApi('1'))
+
+    try:
+        client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+        return True
+    except Exception as e:
+        print(f"Failed to connect to MongoDB: {e}")
+        return False
+
+check_db_connection()
