@@ -1,4 +1,10 @@
 <template>
+  
+  <div class="field">
+    <label class="label">Datasets Name</label>
+    <input type="text" class="input" v-model="name" placeholder="Enter datasets name (Must be unique and precise) (Ex : number of trees)" />
+  </div>
+  
   <div class="field">
     <label class="label">Upload File</label>
     <div class="file is-normal is-boxed">
@@ -51,3 +57,18 @@ export default {
   },
 }
 </script>
+
+<style>
+
+.field {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+} 
+
+.file-name {
+  display: flex;
+  justify-content: center;
+}
+
+</style>
