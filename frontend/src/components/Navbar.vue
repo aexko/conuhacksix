@@ -18,7 +18,7 @@
             </div>
 
             <div class="navbar-end">
-                <div class="navbar-item">
+                <!-- <div class="navbar-item">
                     <div class="buttons">
                         <router-link class="button is-primary" to="/signup">
                             <strong>Sign up</strong>
@@ -27,7 +27,7 @@
                             Log in
                         </router-link>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </nav>
