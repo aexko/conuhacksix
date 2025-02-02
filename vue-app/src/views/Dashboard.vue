@@ -1,3 +1,8 @@
+<script setup>
+import GraphLine from '@/components/GraphLine.vue';
+import InsightsComponent from '@/components/InsightsComponent.vue';
+</script>
+
 <template>
     <div class="dashboard">
         <h1 class="title">Dashboard</h1>
