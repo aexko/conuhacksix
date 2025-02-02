@@ -6,7 +6,7 @@ from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 from fastapi import FastAPI
 
-# `fastapi dev main.py` to run the server
+# `backend dev main.py` to run the server
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import csv
@@ -22,13 +22,13 @@ import json
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 
-# `fastapi dev main.py` to run the server
+# `backend dev main.py` to run the server
 import json
 
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 
-# `fastapi dev main.py` to run the server
+# `backend dev main.py` to run the server
 app = FastAPI()
 
 uri = os.getenv("MONGODB_URI")
