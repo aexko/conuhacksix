@@ -2,7 +2,7 @@ import requests
 import json
 import os
 
-api_key = 'AIzaSyBvBymHLKxtrzx3iFDOKCKE4C99ZIJU1Ak'
+api_key = os.getenv("KEY")
 
 
 def call_gemini_api():
