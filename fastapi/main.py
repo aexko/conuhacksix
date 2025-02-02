@@ -1,5 +1,7 @@
 import json
 
+from bson import ObjectId
+
 from modules.gemini import call_gemini_api
 from modules.calculation import calculate_correlation
 from fastapi import FastAPI
@@ -23,6 +25,7 @@ from modules.calculation import calculate_correlation
 # `fastapi dev main.py` to run the server
 app = FastAPI()
 
+uri = os.getenv("MONGODB_URI")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
@@ -35,16 +38,7 @@ app.add_middleware(
 
 @app.post("/savefile/")
 async def save_file(title: str = Form(...), description: str = Form(...), filename: str = Form(...)):
-    uri = os.getenv("MONGODB_URI")
-    client = MongoClient(uri, server_api=ServerApi('1'))
-    db = client["filestore"]
-    collection = db["files"]
-    file = {
-        "title": title,
-        "description": description,
-        "filename": filename
-    }
-    collection.insert_one(file)
+
     return {"message": "Data saved successfully!"}
 
 
@@ -52,30 +46,32 @@ async def save_file(title: str = Form(...), description: str = Form(...), filena
 async def root():
     return {"message": "Hello World"}
 
-
-@app.get("/gemini")
-async def callapi():
-    response = call_gemini_api()
-
-    # print(response)
+@app.delete("/deletefile/{id}")
+async def delete_file(id: str):
     try:
-        text_content = response["candidates"][0]["content"]["parts"][0]["text"]
-        json_string = text_content
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        db = client["filestore"]
+        collection = db["files"]
 
-        # Step 2: Remove the Markdown code block syntax
-        json_string = json_string.strip("```json\n").strip("\n```")
-
-        # Step 3: Parse the JSON string into a Python object
-        parsed_data = json.loads(json_string)
-        return parsed_data
+        result = collection.delete_one({"_id": ObjectId(id)})
+        if result.deleted_count == 1:
+            return {"message": "File deleted successfully!"}
+        else:
+            return {"message": "File not found!"}
     except:
-        print('error')
-        return response
-    return {"message": "Hello World"}
-
+        return {"message": "File not found!"}
 
 @app.post("/uploadfile/")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...), title: str = Form(...)):
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    document = {
+        "title": title,
+        "filename": file.filename
+    }
+    collection.insert_one(document)
+
     content = await file.read()
     decoded_content = content.decode("utf-8").splitlines()
     reader = csv.reader(decoded_content)
@@ -89,7 +85,6 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 def check_db_connection():
-    uri = os.getenv("MONGODB_URI")
     client = MongoClient(uri, server_api=ServerApi('1'))
 
     try:
@@ -103,7 +98,46 @@ def check_db_connection():
 
 check_db_connection()
 
+@app.get("/getcorrelations")
+async def get_correlations():
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    # results =
+    files = []
+    for result in collection.find():
+        try:
+            files.append(
+                {'filename': result['filename'], 'title': result['title'],
+                 'id': str(result['_id'])})
+        except:
+            pass
 
-@app.post("/merge")
-async def merge_files():
-    return {"message": "Files merged successfully"}
+    return files
+
+
+@app.get("/gemini")
+async def call_api():
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    db = client["filestore"]
+    collection = db["files"]
+    subPrompt = ''
+    for result in collection.find():
+        try:
+            subPrompt += result['title'] + ', '
+        except:
+            pass
+    response = call_gemini_api(subPrompt)
+    try:
+        text_content = response["candidates"][0]["content"]["parts"][0]["text"]
+        json_string = text_content
+
+        # Step 2: Remove the Markdown code block syntax
+        json_string = json_string.strip("```json\n").strip("\n```")
+
+        # Step 3: Parse the JSON string into a Python object
+        parsed_data = json.loads(json_string)
+        return parsed_data
+    except:
+        print('error')
+        return {"message": response}

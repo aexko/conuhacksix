@@ -1,0 +1,11 @@
+incident_id,location,priority,complexity,availability
+1,Forest A,High,High,1
+2,Forest B,Medium,Medium,1
+3,Forest C,Low,Low,0
+4,Forest D,High,Medium,1
+5,Forest E,Medium,Low,1
+6,Forest F,Low,High,0
+7,Forest G,High,High,1
+8,Forest H,Medium,Medium,1
+9,Forest I,Low,Low,1
+10,Forest J,High,Low,1
