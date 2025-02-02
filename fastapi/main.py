@@ -1,7 +1,13 @@
+import json
+
+from modules.gemini import call_gemini_api
+from modules.calculation import calculate_correlation
+from fastapi import FastAPI
+
+# `fastapi dev main.py` to run the server
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 import csv
-import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import os
